@@ -1,12 +1,12 @@
-import {useState, useContext, useReducer} from 'react'
+import {useState, useContext} from 'react'
 import GithubContext from '../../context/github/GithubContext'
 import AlertContext from '../../context/alert/AlertContext'
-import { searchUser } from '../../context/github/GithubActions'
+import { searchUsers } from '../../context/github/GithubActions'
 
 function UserSearch() {
   const [text, setText] = useState('')
 
-  const {users, clearUsers, dispatch} = useContext(GithubContext)
+  const {users, dispatch} = useContext(GithubContext)
   const {setAlert} = useContext(AlertContext)
 
   const handleChange = (e) => setText(e.target.value)
@@ -16,20 +16,14 @@ function UserSearch() {
 
     if (text === '') {
         setAlert('Please enter something', 'error')
-    } else {
-        dispatch({
-            type: 'SET_LOADING',
-        })
-
-        const users = await searchUser(text)
-
-        dispatch({
-            type: 'GET_USERS',
-            payload: users
-        })
-
+      } else {
+        dispatch({ type: 'SET_LOADING' })
+        const users = await searchUsers(text)
+        
+        dispatch({ type: 'GET_USERS', payload: users })
+  
         setText('')
-    }
+      }
   }
 
   return (
